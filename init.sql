@@ -149,6 +149,29 @@ create table messages
 alter table messages
     owner to panda;
 
+create table behavioral_notes
+(
+    note_id                serial primary key,
+    student_id             integer   not null references students,
+    teacher_id             integer   not null references users,
+    subject_id             integer references subjects,
+    behavior_type          varchar(20) not null,
+    category               varchar(30) not null,
+    title                  varchar(200) not null,
+    description            varchar(500) not null,
+    behavior_score         integer,
+    incident_date          date      not null default CURRENT_DATE,
+    add_date               timestamp with time zone default now(),
+    parent_notified        boolean   default false,
+    parent_notification_date timestamp with time zone,
+    requires_followup      boolean   default false,
+    followup_completed     boolean   default false,
+    followup_date          timestamp with time zone,
+    followup_description   varchar(500)
+);
+
+alter table behavioral_notes
+    owner to panda;
 
 -- USERS
 INSERT INTO users (login, password, user_type, email, phone_nr, photo, logged_in) VALUES
