@@ -167,7 +167,7 @@ create table behavioral_notes
     requires_followup      boolean   default false,
     followup_completed     boolean   default false,
     followup_date          timestamp with time zone,
-    followup_description   varchar(500)
+    followup_notes          varchar(500)
 );
 
 alter table behavioral_notes

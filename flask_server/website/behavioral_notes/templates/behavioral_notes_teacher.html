@@ -78,8 +78,8 @@
 {#  wyświetlenie ostatnich 3 notatek danego ucznia     #}
                   {% for note in student.behavioral_notes | sort(attribute='created_at', reverse=true) | list | slice(3) %}
                     <button type="button" class="btn btn-sm
-                        {% if note.behavior_type.value == 'positive' %}btn-success
-                        {% elif note.behavior_type.value == 'negative' %}btn-danger
+                        {% if note.behavior_type == 'positive' %}btn-success
+                        {% elif note.behavior_type == 'negative' %}btn-danger
                         {% else %}btn-secondary
                         {% endif %}"
                         data-bs-toggle="modal" data-bs-target="#note-modal-{{ student.student_id }}-{{ loop.index }}">
@@ -104,9 +104,9 @@
                                         {% endif %}
                                     </p>
                                     <p><strong>Type:</strong>
-                                        {% if note.behavior_type.value == 'positive' %}
+                                        {% if note.behavior_type == 'positive' %}
                                             <span class="badge bg-success">Positive</span>
-                                        {% elif note.behavior_type.value == 'negative' %}
+                                        {% elif note.behavior_type == 'negative' %}
                                             <span class="badge bg-danger">Negative</span>
                                         {% else %}
                                             <span class="badge bg-secondary">Neutral</span>
