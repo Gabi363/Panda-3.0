@@ -37,6 +37,7 @@ class Students(db.Model, UserMixin):
     # relacje zdefiniowane na tabeli students
     # parent = db.relationship('Parents')
     grades = db.relationship('Grades')
+    behavioral_notes = db.relationship('BehavioralNotes', backref='student', lazy='dynamic')
 
 
 # model nauczyciela (odpowiednik tabeli teachers)

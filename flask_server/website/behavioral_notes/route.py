@@ -50,27 +50,30 @@ def behavioral_notes_teacher(class_name):
     # Obsługa POST - dodawanie, edycja i usuwanie notatek
     if request.method == "POST":
         # Dodawanie nowej notatki
-        if 'add_note' in request.form:
-            new_note = BehavioralNotes(
-                student_id=request.form.get('student_id'),
-                teacher_id=current_user.user_id,
-                subject_id=request.form.get('subject_id') if request.form.get('subject_id') else None,
-                behavior_type=request.form.get('behavior_type'),
-                category=request.form.get('category'),
-                title=request.form.get('title'),
-                description=request.form.get('description'),
-                behavior_score=request.form.get('behavior_score'),
-                incident_date=datetime.strptime(request.form.get('incident_date'),
-                                                '%Y-%m-%d').date() if request.form.get(
-                    'incident_date') else date.today(),
-                requires_followup=True if request.form.get('requires_followup') == 'on' else False
-            )
-            db.session.add(new_note)
-            db.session.commit()
-            flash('Notatka została dodana pomyślnie!', 'success')
+        if request.form.get('action') == 'add_note':
+            try:
+                new_note = BehavioralNotes(
+                    student_id=request.form.get('student_id'),
+                    teacher_id=current_user.user_id,
+                    subject_id=request.form.get('subject_id') if request.form.get('subject_id') else None,
+                    behavior_type=request.form.get('behavior_type'),
+                    category=request.form.get('category'),
+                    title=request.form.get('title'),
+                    description=request.form.get('description'),
+                    behavior_score=request.form.get('behavior_score') if request.form.get('behavior_score') else None,
+                    incident_date=datetime.strptime(request.form.get('incident_date'), '%Y-%m-%d').date() if request.form.get('incident_date') else date.today(),
+                    requires_followup=True if request.form.get('requires_followup') == 'on' else False
+                )
+                db.session.add(new_note)
+                db.session.commit()
+                flash('Notatka została dodana pomyślnie!', 'success')
+            except Exception as e:
+                db.session.rollback()
+                flash(f'Błąd podczas dodawania notatki: {e}', 'danger')
+                print(f'Błąd podczas dodawania notatki: {e}')
 
         # Edycja notatki
-        elif 'edit_note' in request.form:
+        elif request.form.get('action') == 'edit_note':
             note_id = request.form.get('note_id')
             note = BehavioralNotes.query.get(note_id)
             if note:
@@ -85,8 +88,8 @@ def behavioral_notes_teacher(class_name):
                 flash('Notatka została zaktualizowana!', 'success')
 
         # Usuwanie notatki
-        elif 'delete_note' in request.form:
-            note_id = request.form.get('note_id_delete')
+        elif request.form.get('action') == 'delete_note':
+            note_id = request.form.get('note_id')
             note = BehavioralNotes.query.get(note_id)
             if note:
                 db.session.delete(note)
@@ -94,7 +97,7 @@ def behavioral_notes_teacher(class_name):
                 flash('Notatka została usunięta!', 'success')
 
         # Oznaczanie rodzica jako powiadomionego
-        elif 'notify_parent' in request.form:
+        elif request.form.get('action') == 'notify_parent':
             note_id = request.form.get('note_id')
             note = BehavioralNotes.query.get(note_id)
             if note:
@@ -104,7 +107,7 @@ def behavioral_notes_teacher(class_name):
                 flash('Rodzic został oznaczony jako powiadomiony!', 'success')
 
         # Oznaczanie follow-up jako zakończony
-        elif 'complete_followup' in request.form:
+        elif request.form.get('action') == 'complete_followup':
             note_id = request.form.get('note_id')
             note = BehavioralNotes.query.get(note_id)
             if note:
@@ -151,5 +154,6 @@ def behavioral_notes_teacher(class_name):
         classes=classes,
         students=students,
         notes=notes,
-        sort_order=sort_order
+        sort_order=sort_order,
+        BehavioralNotes=BehavioralNotes
     )

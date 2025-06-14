@@ -39,5 +39,4 @@ class BehavioralNotes(db.Model, UserMixin):
 
     # relacje zdefiniowane na tabeli behavioral_notes
     subject = db.relationship('Subjects')
-    student = db.relationship('Students')
     teacher = db.relationship('Users')

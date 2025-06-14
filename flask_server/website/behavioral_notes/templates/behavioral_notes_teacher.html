@@ -76,7 +76,7 @@
             <div class="col-md-4 themed-grid-col">
 
                 {#  wyświetlenie ostatnich 3 notatek danego ucznia     #}
-                {% for note in student.behavioral_notes | sort(attribute='add_date', reverse=true) | list | slice(3) %}
+                {% for note in student.behavioral_notes.order_by(BehavioralNotes.add_date.desc()).limit(3) %}
                 <button type="button" class="btn btn-sm
                     {% if note.behavior_type == 'positive' %}btn-success
                     {% elif note.behavior_type == 'negative' %}btn-danger
@@ -366,8 +366,11 @@
         const studentRows = document.querySelectorAll('.student-row');
 
         function filterRows() {
+            // Sprawdź, czy jakikolwiek filtr jest aktywny
+            const isAnyFilterActive = behaviorTypeFilter.value || categoryFilter.value || dateFromFilter.value || dateToFilter.value;
+
             studentRows.forEach(row => {
-                let rowVisible = false; // Flag to determine if the student row should be visible
+                let rowVisible = !isAnyFilterActive; // Domyślnie pokazuj, jeśli nie ma filtrów
 
                 // Get all note buttons within the current student row
                 const noteButtons = row.querySelectorAll('.btn-sm[data-behavior-type][data-category][data-incident-date]');
@@ -412,7 +415,7 @@
                     }
 
                     if (noteMatchesFilters) {
-                        rowVisible = true; // If at least one note matches, the student row should be visible
+                        rowVisible = true; // Jeśli chociaż jedna notatka pasuje do filtrów, pokaż wiersz
                     }
                 });
 

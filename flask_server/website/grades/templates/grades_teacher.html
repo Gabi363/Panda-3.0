@@ -118,15 +118,15 @@
                                                 <div class="form-floating">
                                                         <input type="hidden"
                                                                class="form-control"
-                                                               id="delete"
-                                                               name="delete"
-                                                               value="true"/>
+                                                               id="action"
+                                                               name="action"
+                                                               value="delete_grade"/>
                                                 </div>
                                                 <div class="form-floating">
                                                         <input type="hidden"
                                                                class="form-control"
-                                                               id="grade_id_delete"
-                                                               name="grade_id_delete"
+                                                               id="grade_id"
+                                                               name="grade_id"
                                                                value="{{ grade.grade_id }}"/>
                                                 </div>
                                                 <button class="btn btn-primary" type="submit">Delete</button>
@@ -235,6 +235,13 @@
                               <div class="modal-body py-0">
                                   <form action="#" method="post">
                                         <div class="form-floating">
+                                            <input type="hidden"
+                                                   class="form-control"
+                                                   id="action"
+                                                   name="action"
+                                                   value="add_grade"/>
+                                        </div>
+                                        <div class="form-floating">
                                             <input type="number"
                                                    class="form-control"
                                                    id="type"
@@ -271,7 +278,7 @@
                                                            name="final_id"
                                                            value="{{ vars.final }}"/>
                                             </div>
-                                    <button class="btn btn-primary w-100 py-2" type="submit">Add</button>
+                                    <button class="btn btn-primary w-100 py-2" type="submit">Add final grade</button>
                                     <br>
                                     <br>
                                   </form>
@@ -294,55 +301,69 @@
                           </div>
                               <div class="modal-body py-0">
                                   <form action="#" method="post">
-                                        <div class="form-floating">
-                                            <input type="number"
-                                                   class="form-control"
-                                                   id="type"
-                                                   name="type"
-                                                   placeholder="Type"/>
-                                            <label for="type">Grade</label>
-                                        </div>
-                                        <br>
-                                        <div class="form-floating">
-                                            <input type="number"
-                                                   class="form-control"
-                                                   id="weight"
-                                                   name="weight"
-                                                   placeholder="Weight"/>
-                                            <label for="weight">Weight</label>
-                                        </div>
-                                        <br>
-                                        <div class="form-floating">
-                                            <input type="text"
-                                                   class="form-control"
-                                                   id="description"
-                                                   name="description"
-                                                   placeholder="Description"/>
-                                            <label for="description">Description</label>
-                                        </div>
-                                        <br>
-                                        <div class="form-floating">
-                                            <input type="hidden"
-                                                   class="form-control"
-                                                   id="subject_id"
-                                                   name="subject_id"
-                                                   value="{{ subject.subject_id }}"/>
-                                        </div>
-                                        <div class="form-floating">
-                                            <input type="hidden"
-                                                   class="form-control"
-                                                   id="student_id"
-                                                   name="student_id"
-                                                   value="{{ student.student_id }}"/>
-                                        </div>
-                                    <button class="btn btn-primary w-100 py-2" type="submit">Add</button>
-                                    <br>
-                                    <br>
-                                  </form>
-                              </div>
-                            </div>
-                          </div>
-                    </div>
+                <div class="form-floating">
+                    <input type="hidden"
+                           class="form-control"
+                           id="action"
+                           name="action"
+                           value="add_grade"/>
+                </div>
+                <div class="form-floating">
+                    <input type="number"
+                           class="form-control"
+                           id="type"
+                           name="type"
+                           placeholder="Type"/>
+                    <label for="type">Grade</label>
+                </div>
+                <br>
+                <div class="form-floating">
+                    <input type="number"
+                           class="form-control"
+                           id="weight"
+                           name="weight"
+                           placeholder="Weight"/>
+                    <label for="weight">Weight</label>
+                </div>
+                <br>
+                <div class="form-floating">
+                    <input type="text"
+                           class="form-control"
+                           id="description"
+                           name="description"
+                           placeholder="Description"/>
+                    <label for="description">Description</label>
+                </div>
+                <br>
+                <div class="form-floating">
+                    <input type="hidden"
+                           class="form-control"
+                           id="subject_id"
+                           name="subject_id"
+                           value="{{ subject.subject_id }}"/>
+                </div>
+                <div class="form-floating">
+                    <input type="hidden"
+                           class="form-control"
+                           id="student_id"
+                           name="student_id"
+                           value="{{ student.student_id }}"/>
+                </div>
+                <div class="form-floating">
+                    <input type="hidden"
+                           class="form-control"
+                           id="is_final"
+                           name="is_final"
+                           value="false"/>
+                </div>
+                <button class="btn btn-primary w-100 py-2" type="submit">Dodaj ocenę</button>
+                <br>
+                <br>
+              </form>
+          </div>
+        </div>
+      </div>
+</div>
 
 
                 </div>

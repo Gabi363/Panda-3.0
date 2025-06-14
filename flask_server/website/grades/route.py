@@ -86,6 +86,88 @@ def grades_teacher(class_name):
     students = list(students)
     students.sort(key=student_average, reverse=(sort_order == 'desc'))
 
+    if request.method == "POST":
+        print('FORM DATA:', dict(request.form))  # LOGUJEMY CAŁY FORMULARZ
+        action = request.form.get('action')
+        # Dodanie oceny
+        if action == "add_grade":
+            try:
+                grade_type = request.form.get('type')
+                grade_weight = request.form.get('weight')
+                description = request.form.get('description')
+                is_final = request.form.get('is_final') == 'true'
+                student_id = request.form.get('student_id')
+                subject_id = request.form.get('subject_id')
+                # Dodawanie/edycja oceny końcowej
+                if is_final:
+                    existing_final = Grades.query.filter_by(student_id=student_id, subject_id=subject_id, is_final=True).first()
+                    if existing_final:
+                        existing_final.type = int(grade_type) if grade_type is not None and grade_type != '' else existing_final.type
+                        existing_final.weight = int(grade_weight) if grade_weight is not None and grade_weight != '' else existing_final.weight
+                        existing_final.description = description if description and description.strip() != '' else existing_final.description
+                        db.session.commit()
+                        flash('Ocena końcowa została zaktualizowana!', 'success')
+                    else:
+                        new_grade = Grades(
+                            student_id=student_id,
+                            subject_id=subject_id,
+                            type=int(grade_type) if grade_type is not None and grade_type != '' else 0,
+                            weight=int(grade_weight) if grade_weight is not None and grade_weight != '' else 1,
+                            description=description if description and description.strip() != '' else 'Brak opisu',
+                            is_final=True
+                        )
+                        db.session.add(new_grade)
+                        db.session.commit()
+                        flash('Ocena końcowa została dodana!', 'success')
+                # Dodawanie zwykłej oceny
+                else:
+                    new_grade = Grades(
+                        student_id=student_id,
+                        subject_id=subject_id,
+                        type=int(grade_type) if grade_type is not None and grade_type != '' else 0,
+                        weight=int(grade_weight) if grade_weight is not None and grade_weight != '' else 1,
+                        description=description if description and description.strip() != '' else 'Brak opisu',
+                        is_final=False
+                    )
+                    db.session.add(new_grade)
+                    db.session.commit()
+                    flash('Ocena została dodana pomyślnie!', 'success')
+            except Exception as e:
+                db.session.rollback()
+                flash(f'Błąd podczas dodawania oceny: {e}', 'danger')
+                print(f'Błąd podczas dodawania oceny: {e}')
+        # Usuwanie oceny
+        elif action == "delete_grade":
+            try:
+                grade_id = request.form.get('grade_id')
+                grade = Grades.query.get(grade_id)
+                if grade:
+                    db.session.delete(grade)
+                    db.session.commit()
+                    flash('Ocena została usunięta!', 'success')
+                else:
+                    flash('Nie znaleziono oceny do usunięcia.', 'danger')
+            except Exception as e:
+                db.session.rollback()
+                flash(f'Błąd podczas usuwania oceny: {e}', 'danger')
+                print(f'Błąd podczas usuwania oceny: {e}')
+        # Zmiana oceny
+        elif request.form.get('change') == 'true':
+            try:
+                grade_id = request.form.get('grade_id')
+                grade = Grades.query.get(grade_id)
+                if grade:
+                    grade.type = int(request.form.get('type')) if request.form.get('type') else grade.type
+                    grade.weight = int(request.form.get('weight')) if request.form.get('weight') else grade.weight
+                    grade.description = request.form.get('description') if request.form.get('description') else grade.description
+                    db.session.commit()
+                    flash('Ocena została zmieniona!', 'success')
+                else:
+                    flash('Nie znaleziono oceny do zmiany.', 'danger')
+            except Exception as e:
+                db.session.rollback()
+                flash(f'Błąd podczas zmiany oceny: {e}', 'danger')
+                print(f'Błąd podczas zmiany oceny: {e}')
     return render_template(
         'grades_teacher.html',
         user=current_user,
@@ -96,4 +178,3 @@ def grades_teacher(class_name):
         sort_order=sort_order,
         student_average=student_average
     )
-
